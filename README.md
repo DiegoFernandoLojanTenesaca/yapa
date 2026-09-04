@@ -58,9 +58,20 @@ La decisión vive en un solo lugar: `lib/almacen.js`.
 
 ## Publicar
 
-Vercel, conectando el repo. Cargar las 4 variables de `.env.example` en
-Project Settings → Environment Variables. `vercel.json` ya deja programada la
-actualización diaria a las 06:00 de Ecuador contra `/api/cron`.
+Vercel, conectando el repo. Cargar en Project Settings → Environment Variables
+las variables de `.env.example` más `NEXT_PUBLIC_URL` con el dominio real
+(de ahí salen el sitemap y la vista previa al compartir).
+
+`vercel.json` deja programadas **dos actualizaciones diarias** contra `/api/cron`:
+06:00 y 18:00 de Ecuador (`0 11` y `0 23` en UTC).
+
+> En el plan Hobby de Vercel cada cron corre **una sola vez al día**, pero se
+> permiten hasta 100 crons por proyecto. Por eso son dos entradas apuntando a la
+> misma ruta en vez de una expresión de 12 horas, que el despliegue rechazaría.
+
+Cada pedido tiene un tope de 10 s (`ESPERA_MAXIMA` en `lib/scraping.js`): sin eso
+una fuente colgada se comería el límite de 60 s de la función y se perderían las
+demás. La corrida completa de las 6 fuentes tarda ~11 s.
 
 Cualquier host de Node sirve igual; solo hay que apuntarle un cron a
 `GET /api/cron` con la cabecera `Authorization: Bearer $CRON_SECRET`.
