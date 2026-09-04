@@ -26,7 +26,7 @@ export default async function Comercios({ searchParams }) {
 
         <h1>Comercios</h1>
         <p className="sub">
-          {todos.length} comercios con promos vigentes. Entrá a cualquiera para ver todo lo suyo junto.
+          {todos.length} comercios con promos vigentes. Entra a cualquiera para ver todo lo suyo junto.
         </p>
 
         <BuscadorComercios />
@@ -34,7 +34,7 @@ export default async function Comercios({ searchParams }) {
         {lista.length === 0 ? (
           <div className="vacio">
             <b>Ningún comercio con ese nombre</b>
-            <span>Probá con menos letras.</span>
+            <span>Prueba con menos letras.</span>
           </div>
         ) : (
           <div className="rejillaComercios">

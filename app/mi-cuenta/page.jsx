@@ -67,7 +67,7 @@ export default async function MiCuenta() {
           </div>
           <div className="kpi">
             <div className="n">{seguidos.length}</div>
-            <div className="e">Comercios que seguís</div>
+            <div className="e">Comercios que sigues</div>
           </div>
           <div className={`kpi${porVencer.length ? ' urgente' : ''}`}>
             <div className="n">{porVencer.length}</div>
@@ -77,14 +77,14 @@ export default async function MiCuenta() {
 
         {porVencer.length > 0 && (
           <div className="aviso alerta" style={{ marginTop: 16 }}>
-            Tenés {porVencer.length} {porVencer.length === 1 ? 'promo guardada' : 'promos guardadas'} que
+            Tienes {porVencer.length} {porVencer.length === 1 ? 'promo guardada' : 'promos guardadas'} que
             se {porVencer.length === 1 ? 'vence' : 'vencen'} en los próximos 7 días:{' '}
             {porVencer.map((p) => p.comercio).join(', ')}.
           </div>
         )}
 
         <h2 className="seccion">
-          Comercios que seguís ({seguidos.length})
+          Comercios que sigues ({seguidos.length})
           <Link className="btn sec chico" href="/comercios">
             Buscar comercios
           </Link>
@@ -92,10 +92,10 @@ export default async function MiCuenta() {
 
         {seguidos.length === 0 ? (
           <div className="vacio">
-            <b>No seguís ningún comercio todavía</b>
+            <b>No sigues ningún comercio todavía</b>
             <span>
-              Entrá a cualquier comercio y tocá <b style={{ display: 'inline' }}>+ Seguir</b>.
-              Sus promos nuevas te van a aparecer acá.
+              Entra a cualquier comercio y toca <b style={{ display: 'inline' }}>+ Seguir</b>.
+              Sus promos nuevas te aparecen aquí.
             </span>
             <Link className="btn" href="/comercios">
               Ver comercios
@@ -106,7 +106,7 @@ export default async function MiCuenta() {
             {novedades.length > 0 && (
               <div className="aviso ok">
                 {novedades.length} {novedades.length === 1 ? 'promo nueva' : 'promos nuevas'} esta
-                semana en los comercios que seguís.
+                semana en los comercios que sigues.
               </div>
             )}
             <div className="grid">
@@ -125,7 +125,7 @@ export default async function MiCuenta() {
         <h2 className="seccion">Mis tarjetas</h2>
         <div className="caja">
           <p className="sub" style={{ marginBottom: 15 }}>
-            Marcá dónde tenés tarjeta y te mostramos primero lo que sí podés usar.
+            Marca dónde tienes tarjeta y te mostramos primero lo que sí puedes usar.
           </p>
 
           <form action={guardarMisBancos}>
@@ -163,8 +163,8 @@ export default async function MiCuenta() {
         <h2 className="seccion">Mis favoritas ({favoritas.length})</h2>
         {favoritas.length === 0 ? (
           <div className="vacio">
-            <b>Todavía no guardaste ninguna</b>
-            <span>Tocá la estrella en cualquier promo y aparece acá.</span>
+            <b>Todavía no has guardado ninguna</b>
+            <span>Toca la estrella en cualquier promo y aparece aquí.</span>
             <Link className="btn" href="/">
               <Icono nombre="compras" /> Ver promos
             </Link>

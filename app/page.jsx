@@ -110,10 +110,10 @@ export default async function Inicio({ searchParams }) {
 
         {promos.length === 0 ? (
           <div className="vacio">
-            <b>Acá no hay nada… todavía</b>
+            <b>Aquí no hay nada… todavía</b>
             {hayFiltro
-              ? 'Probá quitar algún filtro o buscar otra cosa.'
-              : 'Corré el scraper desde el panel para traer las promos.'}
+              ? 'Prueba quitar algún filtro o buscar otra cosa.'
+              : 'Corre el scraper desde el panel para traer las promos.'}
           </div>
         ) : (
           <>

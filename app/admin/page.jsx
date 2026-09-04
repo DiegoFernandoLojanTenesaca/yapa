@@ -29,7 +29,7 @@ export default async function Resumen() {
     ['Total', r.total, 'en la base'],
     ['Ocultas', r.ocultas, 'despublicadas'],
     ['Vencidas', r.vencidas, 'ya no sirven'],
-    ['A mano', r.manuales, 'cargadas por vos'],
+    ['A mano', r.manuales, 'cargadas por ti'],
   ];
 
   const conError = fuentes.filter((f) => f.ultima?.error);

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
     description: promo.detalle ?? promo.titulo,
     openGraph: {
       title: `${promo.comercio}: ${promo.titulo}`,
-      description: promo.detalle ?? 'Mirá esta promo en Yapa',
+      description: promo.detalle ?? 'Mira esta promo en Yapa',
       images: imagen ? [imagen] : undefined,
       type: 'article',
     },
@@ -156,7 +156,7 @@ export default async function FichaPromo({ params }) {
             <Compartir titulo={promo.titulo} comercio={promo.comercio} />
 
             <p className="fichaNota">
-              Yapa no canjea la promo: te lleva al comercio. Confirmá condiciones y vigencia
+              Yapa no canjea la promo: te lleva al comercio. Confirma condiciones y vigencia
               antes de pagar.
             </p>
           </div>

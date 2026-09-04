@@ -5,9 +5,9 @@ export default function NoEncontrado() {
     <div className="wrap conAire">
       <div className="perdido">
         <span className="numeroto">404</span>
-        <h1>Esta promo ya voló</h1>
+        <h1>Esta promo ya no está</h1>
         <p>
-          O nunca existió, o se venció y la sacamos. Las promos duran poco: por eso conviene
+          O nunca existió, o se venció y la quitamos. Las promos duran poco: por eso conviene
           revisar seguido.
         </p>
         <div className="fichaAcciones" style={{ justifyContent: 'center' }}>

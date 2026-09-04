@@ -18,7 +18,7 @@ export default function PieDePagina({ total, conCodigo }) {
               <strong>Yapa</strong>
               <p>
                 En Ecuador <em>la yapa</em> es lo que te dan de más, gratis.
-                Acá están todas las promos del país en un solo lugar.
+                Aquí están todas las promos del país en un solo lugar.
               </p>
             </div>
           </div>
@@ -37,7 +37,7 @@ export default function PieDePagina({ total, conCodigo }) {
         <div className="pie-legal">
           <p>
             Yapa no vende ni canjea nada: te muestra la promo y te lleva al comercio.
-            Las condiciones y la vigencia las pone cada comercio, así que confirmá siempre
+            Las condiciones y la vigencia las pone cada comercio, así que confirma siempre
             antes de pagar.
           </p>
           <p className="pie-abajo">

@@ -8,7 +8,7 @@ import { salir } from './acciones.js';
 const nunito = Nunito({ subsets: ['latin'], variable: '--fuente', display: 'swap' });
 
 const DESCRIPCION =
-  'Todas las promociones y descuentos de Ecuador en un solo lugar. Filtrá por tus tarjetas y no pagues de más.';
+  'Todas las promociones y descuentos de Ecuador en un solo lugar. Filtra por tus tarjetas y no pagues de más.';
 
 export const metadata = {
   // Sin esto, las imágenes de vista previa se mandan con ruta relativa y
