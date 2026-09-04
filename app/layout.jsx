@@ -8,7 +8,7 @@ import { salir } from './acciones.js';
 const nunito = Nunito({ subsets: ['latin'], variable: '--fuente', display: 'swap' });
 
 export const metadata = {
-  title: 'Yapa — promos y descuentos de Ecuador',
+  title: 'Yapa',
   description:
     'Todas las promociones y descuentos de Ecuador en un solo lugar. Filtrá por tus tarjetas y no pagues de más.',
 };

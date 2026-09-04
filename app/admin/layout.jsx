@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }) {
   if (!s.esAdmin) redirect('/');
 
   return (
-    <div className="wrap">
+    <div className="wrap conAire">
       <nav className="nav" style={{ marginBottom: 20 }}>
         <Link href="/admin">Resumen</Link>
         <Link href="/admin/promos">Promos</Link>

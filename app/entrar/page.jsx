@@ -6,5 +6,5 @@ export const dynamic = 'force-dynamic';
 
 export default async function Entrar() {
   if (await sesion()) redirect('/');
-  return <div className="wrap"><Formulario /></div>;
+  return <div className="wrap conAire"><Formulario /></div>;
 }

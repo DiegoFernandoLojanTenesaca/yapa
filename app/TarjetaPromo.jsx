@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import BotonCodigo from './BotonCodigo.jsx';
 import { alternarFavorito } from './acciones.js';
 import { rebaja } from '../lib/rebaja.js';
@@ -46,7 +47,9 @@ export default function TarjetaPromo({ promo, esFavorita, haySesion }) {
 
       <div className="cuerpo">
         <div className="comercio">{promo.comercio}</div>
-        <div className="titulo">{promo.titulo}</div>
+        <Link className="titulo" href={`/promo/${encodeURIComponent(promo.id)}`}>
+          {promo.titulo}
+        </Link>
         {promo.detalle && <div className="detalle">{promo.detalle}</div>}
 
         <div className="meta">

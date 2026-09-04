@@ -163,7 +163,7 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
   border:1px dashed var(--line);border-radius:var(--r)}
 .vacio b{display:block;font-size:16px;color:var(--tx);margin-bottom:5px}
 .centro{max-width:400px;margin:56px auto}
-.py{padding-top:4px;padding-bottom:40px}
+.py{padding-top:4px;padding-bottom:0}
 
 /* ═══════════ paginación ═══════════ */
 .paginacion{display:flex;gap:6px;align-items:center;justify-content:center;
@@ -208,7 +208,7 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
   color:var(--tx2);text-align:center;line-height:1.2}
 
 /* ═══════════ pie de página ═══════════ */
-.pie-sitio{border-top:1px solid var(--line);background:var(--panel);margin-top:0;
+.pie-sitio{border-top:1px solid var(--line);background:var(--panel);margin-top:56px;
   padding:34px 0 26px}
 .pie-cols{display:flex;gap:32px;justify-content:space-between;flex-wrap:wrap}
 .pie-marca{display:flex;gap:13px;align-items:flex-start;max-width:430px}
@@ -271,3 +271,58 @@ h2.seccion:has(.btn)::after{display:none}
 .barraComercio .riel{height:7px;background:var(--panel2);border-radius:5px;overflow:hidden}
 .barraComercio .relleno{height:100%;background:var(--marca);border-radius:5px}
 .barraComercio b{text-align:right;font-weight:800;color:var(--tx2);font-size:13px}
+
+/* Páginas sin pie de página: el aire de abajo lo ponen ellas. */
+.conAire{padding-bottom:56px}
+
+/* ═══════════ ficha de la promo ═══════════ */
+.miga{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:22px 0 16px;
+  font-size:12.5px;color:var(--tx3);font-weight:650}
+.miga a{text-decoration:none;color:var(--tx2)}
+.miga a:hover{color:var(--ac)}
+.miga b{color:var(--tx);font-weight:750}
+
+.ficha{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.15fr);
+  gap:26px;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);padding:20px;align-items:start}
+@media (max-width:760px){.ficha{grid-template-columns:1fr}}
+
+.fichaMedia{position:relative;border-radius:11px;overflow:hidden;background:var(--panel2);
+  border:1px solid var(--line);min-height:190px}
+.fichaMedia img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.fichaMedia .marcaComercio{min-height:190px}
+.fichaMedia .marcaComercio .logo{width:64px;height:64px}
+.fichaMedia .marcaComercio .inicial{font-size:21px}
+.rebajaGrande{position:absolute;left:0;bottom:0;background:var(--marca);color:#fff;
+  font-size:27px;font-weight:800;letter-spacing:-.03em;padding:7px 17px 7px 15px;
+  border-radius:0 14px 0 0;line-height:1.1}
+
+.fichaTexto h1{font-size:24px;line-height:1.22;margin:5px 0 0}
+.fichaComercio{font-size:12.5px;font-weight:800;color:var(--ac);text-transform:uppercase;
+  letter-spacing:.06em;margin-top:11px}
+.fichaDetalle{font-size:14.5px;color:var(--tx2);margin-top:10px;line-height:1.55}
+
+.cajaCodigo{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex-wrap:wrap;background:var(--bg);border:1px dashed var(--marca);border-radius:11px;
+  padding:13px 15px;margin-top:17px}
+.etiquetaCodigo{display:block;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--tx3);font-weight:800}
+.cajaCodigo strong{font-size:21px;font-weight:800;letter-spacing:.04em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.datos{margin-top:18px;display:grid;gap:12px}
+.datos dt{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--tx3);
+  font-weight:800;margin-bottom:2px}
+.datos dd{font-size:14px;color:var(--tx)}
+.datos dd.urgente{color:var(--alerta);font-weight:700}
+
+.fichaAcciones{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.fichaNota{font-size:12px;color:var(--tx3);margin-top:14px;line-height:1.5}
+
+/* el título de la tarjeta ahora lleva a la ficha */
+a.titulo{text-decoration:none;display:block}
+a.titulo:hover{color:var(--ac)}
+
+/* vacío: el botón se separa del texto en vez de pegarse al pie */
+.vacio{display:flex;flex-direction:column;align-items:center;gap:9px}
+.vacio .btn{margin-top:6px}

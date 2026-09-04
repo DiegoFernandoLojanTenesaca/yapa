@@ -109,12 +109,10 @@ export default async function MiCuenta() {
         {favoritas.length === 0 ? (
           <div className="vacio">
             <b>Todavía no guardaste ninguna</b>
-            Tocá la estrella en cualquier promo y aparece acá.
-            <p style={{ marginTop: 14 }}>
-              <Link className="btn" href="/">
-                <Icono nombre="compras" /> Ver promos
-              </Link>
-            </p>
+            <span>Tocá la estrella en cualquier promo y aparece acá.</span>
+            <Link className="btn" href="/">
+              <Icono nombre="compras" /> Ver promos
+            </Link>
           </div>
         ) : (
           <div className="grid">
