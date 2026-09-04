@@ -29,24 +29,32 @@ Tres tipos de visitante:
 
 ## Puesta en marcha
 
-**1. Supabase.** Crear un proyecto en [supabase.com](https://supabase.com), abrir
-**SQL Editor** y correr `supabase/schema.sql` entero.
+### Modo local (sin configurar nada)
 
-**2. Variables.** Copiar `.env.example` a `.env.local` y llenar con los datos de
-Project Settings → API.
+Sin Supabase, Yapa guarda todo en `data/local.json` y entrás como admin sin clave.
+Sirve para trabajar la interfaz con datos reales antes de conectar nada.
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run scrape    # trae las promos a data/local.json
+npm run dev       # http://localhost:3000
 ```
 
-**3. Hacete admin.** Registrate en `/entrar`, y después en el SQL Editor:
+Una tira amarilla arriba avisa que estás en modo local, para no confundirlo con producción.
+
+### Con Supabase
+
+1. Crear un proyecto en [supabase.com](https://supabase.com), abrir **SQL Editor**
+   y correr `supabase/schema.sql` entero.
+2. Copiar `.env.example` a `.env.local` con los datos de Project Settings → API.
+3. Registrarte en `/entrar` y promoverte a admin:
 
 ```sql
 update public.perfiles set rol = 'admin' where email = 'tu@correo.com';
 ```
 
-**4. Traé las promos.** Botón *Actualizar promos ahora* en `/admin`, o `npm run scrape`.
+En cuanto `NEXT_PUBLIC_SUPABASE_URL` tiene un valor real, la app cambia de almacén sola.
+La decisión vive en un solo lugar: `lib/almacen.js`.
 
 ## Publicar
 
@@ -62,14 +70,20 @@ Cualquier host de Node sirve igual; solo hay que apuntarle un cron a
 | Fuente | Estado | Notas |
 |---|---|---|
 | Produbanco | ✅ 57 promos | HTML plano, trae fecha de vencimiento |
-| Banco Guayaquil | pendiente | Trae **ciudad** (Quito / Guayaquil / Todo el país) |
-| Banco Pichincha | pendiente | SPA — hay que encontrar el JSON que consume |
-| Diners Club (blu benefits) | pendiente | El catálogo más grande del país; su SSL está mal configurado |
+| Banco del Pacífico | ✅ 10 promos | Server-rendered; no publica vigencia en el listado |
+| Banco Guayaquil | ❌ bloqueado | Radware Bot Manager. No se evade: ahí se rompe la protección legal |
+| Banco Pichincha | ❌ inviable | Sitio Salesforce LWR; los datos salen de APIs con sesión |
+| Diners Club (blu benefits) | ❌ 403 | Rechaza peticiones automatizadas |
+| PedidosYa | ❌ 403 | Sus cupones además son personalizados por usuario y ciudad |
+
+Lo bloqueado se carga a mano desde el panel — que es justamente para lo que está
+el formulario de *Nueva promo*.
 
 ### Agregar una fuente
 
 1. Crear `scrapers/<nombre>.js` exportando `fuente`, `banco`, `url` y `scrape(html)`.
 2. Sumarlo al array `FUENTES` en `lib/scraping.js`.
+3. Agregar un fragmento real de su HTML a `test.js`.
 
 `scrape(html)` devuelve objetos con esta forma:
 
@@ -81,7 +95,7 @@ Cualquier host de Node sirve igual; solo hay que apuntarle un cron a
   comercio: 'Amira Cocina Libanesa',
   titulo: 'Recibe una limonada Amira o un postre árabe',
   detalle: 'totalmente gratis',
-  categoria: 'restaurantes',
+  categoria: 'restaurantes',   // vocabulario común, ver abajo
   ciudad: 'todo_el_pais',      // o 'quito' / 'guayaquil'
   vence: '2026-09-15',         // ISO, o null
   codigo: null,                // string si la fuente da un código canjeable
@@ -89,6 +103,11 @@ Cualquier host de Node sirve igual; solo hay que apuntarle un cron a
   imagen: 'https://…'
 }
 ```
+
+**Categorías**: `restaurantes`, `supermercados`, `compras`, `viajes`,
+`entretenimiento`, `salud`, `educacion`, `hogar`, `vehiculos`, `delivery`, `otros`.
+Cada banco usa su propia taxonomía; el scraper la traduce a esta. Sin eso los
+filtros del sitio se parten en vocabularios incompatibles.
 
 ### Reglas que respeta la sincronización
 
@@ -110,6 +129,7 @@ Por eso su botón dice *Ver promo*.
 
 ## Alcance legal
 
-Solo se leen páginas **públicas**, sin login, sin evadir CAPTCHAs ni límites de tasa,
-una vez al día. No se recolectan datos personales de terceros. Las imágenes no se
-republican: se enlazan desde el origen.
+Solo se leen páginas **públicas**, sin login, sin evadir CAPTCHAs ni sistemas
+anti-bot, una vez al día. Cuando un sitio nos bloquea, se respeta el bloqueo y la
+fuente queda marcada como no disponible. No se recolectan datos personales de
+terceros. Las imágenes no se republican: se enlazan desde el origen.

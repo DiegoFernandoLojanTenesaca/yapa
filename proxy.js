@@ -1,11 +1,15 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
+import { esLocal } from './lib/local.js';
 
 /**
  * Los tokens de Supabase vencen: sin este refresco, un usuario logueado
  * aparecería como anónimo al volver un rato después.
  */
 export async function proxy(request) {
+  // En modo local no hay sesión que refrescar.
+  if (esLocal()) return NextResponse.next({ request });
+
   let respuesta = NextResponse.next({ request });
 
   const supabase = createServerClient(

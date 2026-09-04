@@ -2,28 +2,28 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import TarjetaPromo from '../TarjetaPromo.jsx';
 import { guardarMisBancos } from '../acciones.js';
-import { sesionActual } from '../../lib/supabase.js';
+import { sesion } from '../../lib/almacen.js';
 import { promosPublicas, catalogos } from '../../lib/consultas.js';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MiCuenta() {
-  const s = await sesionActual();
+  const s = await sesion();
   if (!s) redirect('/entrar');
 
   const [favoritas, { bancos }] = await Promise.all([
-    promosPublicas({ soloFavoritas: true, usuarioId: s.user.id }),
+    promosPublicas({ favoritas: true, usuarioId: s.user.id }),
     catalogos(),
   ]);
 
   const mios = s.perfil?.bancos ?? [];
 
   return (
-    <>
+    <div className="wrap">
       <h1>Mi cuenta</h1>
       <p className="sub">{s.perfil?.nombre ? `${s.perfil.nombre} · ` : ''}{s.user.email}</p>
 
-      <div className="seccion">Mis tarjetas</div>
+      <h2 className="seccion">Mis tarjetas</h2>
       <div className="caja">
         <p className="sub" style={{ marginBottom: 14 }}>
           Marcá los bancos donde tenés tarjeta. Sirve para filtrar rápido las promos que
@@ -54,11 +54,12 @@ export default async function MiCuenta() {
         )}
       </div>
 
-      <div className="seccion">Mis favoritas ({favoritas.length})</div>
+      <h2 className="seccion">Mis favoritas ({favoritas.length})</h2>
       {favoritas.length === 0 ? (
-        <p className="vacio">
-          Todavía no guardaste ninguna. Tocá la estrella en cualquier promo.
-        </p>
+        <div className="vacio">
+          <b>Todavía no guardaste ninguna</b>
+          Tocá la estrella en cualquier promo para tenerla acá.
+        </div>
       ) : (
         <div className="grid">
           {favoritas.map((p) => (
@@ -66,6 +67,6 @@ export default async function MiCuenta() {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

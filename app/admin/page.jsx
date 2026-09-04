@@ -1,5 +1,5 @@
 import { correrScraperAhora } from '../acciones.js';
-import { resumen, estadoFuentes, ultimasCorridas } from '../../lib/consultas.js';
+import { resumen, estadoFuentes, corridas as ultimasCorridas } from '../../lib/consultas.js';
 
 export const dynamic = 'force-dynamic';
 

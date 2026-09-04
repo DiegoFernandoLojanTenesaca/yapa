@@ -2,34 +2,36 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { supabaseServidor, sesionActual } from '../lib/supabase.js';
+import { supabaseServidor } from '../lib/supabase.js';
 import { correrTodo } from '../lib/scraping.js';
+import * as almacen from '../lib/almacen.js';
 
 /**
  * Las server actions son endpoints HTTP: cualquiera puede invocarlas.
- * Por eso cada acción del panel vuelve a verificar el rol, aunque el
- * layout de /admin ya lo haya hecho.
+ * Por eso cada acción del panel revalida el rol, aunque el layout de /admin
+ * ya lo haya hecho.
  */
 async function exigirAdmin() {
-  const s = await sesionActual();
+  const s = await almacen.sesion();
   if (!s?.esAdmin) redirect('/entrar');
   return s;
 }
 
+const refrescar = (...rutas) => rutas.forEach((r) => revalidatePath(r));
+
 /* ─────────────────────────── cuenta ─────────────────────────── */
 
 export async function registrarse(_prev, form) {
-  const email = String(form.get('email') ?? '').trim();
-  const clave = String(form.get('clave') ?? '');
-  const nombre = String(form.get('nombre') ?? '').trim();
+  if (almacen.esLocal()) return { error: 'En modo local no hacen falta cuentas: ya entrás como admin.' };
 
+  const clave = String(form.get('clave') ?? '');
   if (clave.length < 8) return { error: 'La contraseña necesita al menos 8 caracteres.' };
 
   const sb = await supabaseServidor();
   const { error } = await sb.auth.signUp({
-    email,
+    email: String(form.get('email') ?? '').trim(),
     password: clave,
-    options: { data: { nombre } },
+    options: { data: { nombre: String(form.get('nombre') ?? '').trim() } },
   });
 
   if (error) return { error: error.message };
@@ -37,6 +39,8 @@ export async function registrarse(_prev, form) {
 }
 
 export async function entrar(_prev, form) {
+  if (almacen.esLocal()) redirect('/');
+
   const sb = await supabaseServidor();
   const { error } = await sb.auth.signInWithPassword({
     email: String(form.get('email') ?? '').trim(),
@@ -50,44 +54,28 @@ export async function entrar(_prev, form) {
 }
 
 export async function salir() {
-  const sb = await supabaseServidor();
-  await sb.auth.signOut();
+  if (!almacen.esLocal()) {
+    const sb = await supabaseServidor();
+    await sb.auth.signOut();
+  }
   revalidatePath('/', 'layout');
   redirect('/');
 }
 
 export async function guardarMisBancos(form) {
-  const s = await sesionActual();
+  const s = await almacen.sesion();
   if (!s) redirect('/entrar');
 
-  const sb = await supabaseServidor();
-  await sb.from('perfiles').update({ bancos: form.getAll('bancos').map(String) }).eq('id', s.user.id);
-
-  revalidatePath('/mi-cuenta');
+  await almacen.guardarBancos(s.user.id, form.getAll('bancos').map(String));
+  refrescar('/mi-cuenta', '/');
 }
 
 export async function alternarFavorito(form) {
-  const s = await sesionActual();
+  const s = await almacen.sesion();
   if (!s) redirect('/entrar');
 
-  const promoId = String(form.get('promoId'));
-  const sb = await supabaseServidor();
-
-  const { data } = await sb
-    .from('favoritos')
-    .select('promo_id')
-    .eq('usuario_id', s.user.id)
-    .eq('promo_id', promoId)
-    .maybeSingle();
-
-  if (data) {
-    await sb.from('favoritos').delete().eq('usuario_id', s.user.id).eq('promo_id', promoId);
-  } else {
-    await sb.from('favoritos').insert({ usuario_id: s.user.id, promo_id: promoId });
-  }
-
-  revalidatePath('/');
-  revalidatePath('/mi-cuenta');
+  await almacen.alternarFavorito(s.user.id, String(form.get('promoId')));
+  refrescar('/', '/mi-cuenta');
 }
 
 /* ──────────────────────────── panel ─────────────────────────── */
@@ -98,23 +86,14 @@ export async function alternarCampo(form) {
   const campo = String(form.get('campo'));
   if (!['publicada', 'destacada'].includes(campo)) throw new Error('campo inválido');
 
-  const id = String(form.get('id'));
-  const sb = await supabaseServidor();
-  const { data } = await sb.from('promos').select(campo).eq('id', id).single();
-  await sb.from('promos').update({ [campo]: !data?.[campo] }).eq('id', id);
-
-  revalidatePath('/admin/promos');
-  revalidatePath('/');
+  await almacen.alternarCampo(String(form.get('id')), campo);
+  refrescar('/admin/promos', '/');
 }
 
 export async function borrarPromo(form) {
   await exigirAdmin();
-
-  const sb = await supabaseServidor();
-  await sb.from('promos').delete().eq('id', String(form.get('id')));
-
-  revalidatePath('/admin/promos');
-  revalidatePath('/');
+  await almacen.borrarPromo(String(form.get('id')));
+  refrescar('/admin/promos', '/');
 }
 
 export async function guardarPromo(_prev, form) {
@@ -129,9 +108,7 @@ export async function guardarPromo(_prev, form) {
     return { error: 'Comercio y título son obligatorios.' };
   }
 
-  const id = campo('id');
-  const datos = {
-    fuente: id ? undefined : 'manual',
+  const error = await almacen.guardarPromo(campo('id'), {
     banco: campo('banco'),
     comercio: campo('comercio'),
     titulo: campo('titulo'),
@@ -144,34 +121,16 @@ export async function guardarPromo(_prev, form) {
     imagen: campo('imagen'),
     publicada: form.get('publicada') === 'on',
     destacada: form.get('destacada') === 'on',
-    // Marca de mano: el scraper diario ya no la vuelve a pisar.
-    editada: true,
-    actualizada: new Date().toISOString(),
-  };
+  });
 
-  const sb = await supabaseServidor();
-  const { error } = id
-    ? await sb.from('promos').update(datos).eq('id', id)
-    : await sb.from('promos').insert({
-        ...datos,
-        fuente: 'manual',
-        id: `manual:${Date.now().toString(36)}`,
-        activa: true,
-      });
+  if (error) return { error };
 
-  if (error) return { error: error.message };
-
-  revalidatePath('/admin/promos');
-  revalidatePath('/');
+  refrescar('/admin/promos', '/');
   redirect('/admin/promos');
 }
 
 export async function correrScraperAhora() {
   await exigirAdmin();
-
   await correrTodo();
-
-  revalidatePath('/admin');
-  revalidatePath('/admin/promos');
-  revalidatePath('/');
+  refrescar('/admin', '/admin/promos', '/');
 }

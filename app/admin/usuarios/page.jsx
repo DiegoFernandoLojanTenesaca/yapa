@@ -1,9 +1,9 @@
-import { usuariosRegistrados } from '../../../lib/consultas.js';
+import { usuarios as listarUsuarios } from '../../../lib/almacen.js';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Usuarios() {
-  const usuarios = await usuariosRegistrados();
+  const usuarios = await listarUsuarios();
 
   return (
     <>

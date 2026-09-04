@@ -3,15 +3,16 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 
-export default function Filtros({ categorias, bancos, ciudades, haySesion }) {
+export default function Filtros({ bancos, ciudades, haySesion }) {
   const router = useRouter();
   const params = useSearchParams();
   const form = useRef(null);
 
   function aplicar() {
-    const datos = new FormData(form.current);
     const q = new URLSearchParams();
-    for (const [k, v] of datos.entries()) if (v) q.set(k, v);
+    // La categoría la maneja la barra de arriba: acá se conserva.
+    if (params.get('categoria')) q.set('categoria', params.get('categoria'));
+    for (const [k, v] of new FormData(form.current).entries()) if (v) q.set(k, v);
     router.push(q.toString() ? `/?${q}` : '/');
   }
 
@@ -23,19 +24,20 @@ export default function Filtros({ categorias, bancos, ciudades, haySesion }) {
     ));
 
   return (
-    <form ref={form} className="fila" style={{ margin: '20px 0 4px' }} onSubmit={(e) => (e.preventDefault(), aplicar())}>
+    <form
+      ref={form}
+      className="buscador"
+      onSubmit={(e) => {
+        e.preventDefault();
+        aplicar();
+      }}
+    >
       <input
         name="q"
         type="search"
         defaultValue={params.get('q') ?? ''}
-        placeholder="Buscar comercio o promo…  ej: restaurante, viajes"
-        style={{ flex: '3 1 240px' }}
+        placeholder="Buscar comercio o promo…  ej: KFC, hotel, supermercado"
       />
-
-      <select name="categoria" defaultValue={params.get('categoria') ?? ''} onChange={aplicar}>
-        <option value="">Todas las categorías</option>
-        {opciones(categorias)}
-      </select>
 
       <select name="banco" defaultValue={params.get('banco') ?? ''} onChange={aplicar}>
         <option value="">Todos los bancos</option>
@@ -58,11 +60,11 @@ export default function Filtros({ categorias, bancos, ciudades, haySesion }) {
             defaultChecked={params.get('favoritas') === '1'}
             onChange={aplicar}
           />
-          Solo mis favoritas
+          Mis favoritas
         </label>
       )}
 
-      <button className="btn sec" type="submit" style={{ flex: '0 0 auto' }}>
+      <button className="btn" type="submit" style={{ flex: '0 0 auto' }}>
         Buscar
       </button>
     </form>

@@ -1,17 +1,12 @@
 import FormularioPromo from './FormularioPromo.jsx';
-import { supabaseServidor } from '../../../lib/supabase.js';
+import { obtenerPromo } from '../../../lib/almacen.js';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EditarPromo({ searchParams }) {
   const { id } = await searchParams;
 
-  let promo = null;
-  if (id) {
-    const sb = await supabaseServidor();
-    const { data } = await sb.from('promos').select('*').eq('id', id).single();
-    promo = data;
-  }
+  const promo = id ? await obtenerPromo(id) : null;
 
   return (
     <>
