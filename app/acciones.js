@@ -78,6 +78,15 @@ export async function alternarFavorito(form) {
   refrescar('/', '/mi-cuenta');
 }
 
+export async function alternarSeguirComercio(form) {
+  const s = await almacen.sesion();
+  if (!s) redirect('/entrar');
+
+  const slug = String(form.get('slug'));
+  await almacen.alternarSeguido(s.user.id, slug);
+  refrescar('/mi-cuenta', `/comercio/${slug}`);
+}
+
 /* ──────────────────────────── panel ─────────────────────────── */
 
 export async function alternarCampo(form) {

@@ -5,7 +5,8 @@ import PieDePagina from '../../PieDePagina.jsx';
 import Paginacion from '../../Paginacion.jsx';
 import Icono from '../../Icono.jsx';
 import Orden from '../../Orden.jsx';
-import { sesion } from '../../../lib/almacen.js';
+import { alternarSeguirComercio } from '../../acciones.js';
+import { sesion, comerciosSeguidos } from '../../../lib/almacen.js';
 import { promosPublicas, comercioPorSlug, idsFavoritas, catalogos } from '../../../lib/consultas.js';
 import { logoDe } from '../../../lib/logo.js';
 
@@ -25,7 +26,11 @@ export default async function PaginaComercio({ params, searchParams }) {
     sesion(),
     catalogos(),
   ]);
-  const favoritas = await idsFavoritas(s?.user.id);
+  const [favoritas, seguidos] = await Promise.all([
+    idsFavoritas(s?.user.id),
+    s ? comerciosSeguidos(s.user.id) : [],
+  ]);
+  const loSigo = seguidos.includes(slug);
 
   const paginas = Math.max(1, Math.ceil(promos.length / POR_PAGINA));
   const pagina = Math.min(Math.max(1, Number(sp.p) || 1), paginas);
@@ -60,7 +65,26 @@ export default async function PaginaComercio({ params, searchParams }) {
               ))}
             </div>
           </div>
+
+          {s ? (
+            <form action={alternarSeguirComercio} className="accionSeguir">
+              <input type="hidden" name="slug" value={slug} />
+              <button className={`btn${loSigo ? ' sec' : ''}`}>
+                {loSigo ? '✓ Siguiendo' : '+ Seguir'}
+              </button>
+            </form>
+          ) : (
+            <Link className="btn accionSeguir" href="/entrar">
+              + Seguir
+            </Link>
+          )}
         </header>
+
+        {s && loSigo && (
+          <p className="sub" style={{ marginTop: 4 }}>
+            Sus promos nuevas te aparecen en <Link href="/mi-cuenta">Mi cuenta</Link>.
+          </p>
+        )}
 
         <div className="barraOrden">
           <Orden base={`/comercio/${slug}`} />

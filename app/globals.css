@@ -361,3 +361,16 @@ a.titulo:hover{color:var(--ac)}
 /* el comercio de la tarjeta ahora es un enlace */
 a.comercio{text-decoration:none;display:block;width:fit-content}
 a.comercio:hover{text-decoration:underline}
+
+/* ═══════════ seguir comercio ═══════════ */
+.accionSeguir{margin-left:auto;flex:none;align-self:center}
+
+/* ═══════════ compartir ═══════════ */
+.compartir{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px;
+  padding-top:17px;border-top:1px solid var(--line)}
+.etiquetaCompartir{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--tx3);font-weight:800;margin-right:2px}
+
+/* ═══════════ sección urgente ═══════════ */
+h2.seccion.urge{color:var(--alerta)}
+h2.seccion.urge::after{background:color-mix(in srgb,var(--alerta) 35%,var(--line))}

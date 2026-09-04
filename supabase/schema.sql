@@ -11,6 +11,8 @@ create table if not exists public.perfiles (
   nombre  text,
   rol     text not null default 'usuario' check (rol in ('usuario', 'admin')),
   bancos  text[] not null default '{}',
+  -- slugs de los comercios que el usuario sigue
+  seguidos text[] not null default '{}',
   creado  timestamptz not null default now()
 );
 

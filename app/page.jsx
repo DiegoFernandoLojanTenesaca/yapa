@@ -32,9 +32,21 @@ export default async function Inicio({ searchParams }) {
 
   const hayFiltro = !!(sp.q || sp.categoria || sp.ciudad || sp.favoritas || sp.codigo);
 
-  // Las destacadas van fuera del listado, y solo en la primera página sin filtros.
-  const destacadas = hayFiltro || sp.p ? [] : promos.filter((p) => p.destacada).slice(0, 3);
-  const resto = promos.filter((p) => !destacadas.includes(p));
+  // Destacadas y "por vencer" solo en la portada limpia: con filtros estorban.
+  const portadaLimpia = !hayFiltro && !sp.p && !sp.orden;
+
+  const destacadas = portadaLimpia ? promos.filter((p) => p.destacada).slice(0, 3) : [];
+
+  const enSieteDias = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+  const hoy = new Date().toISOString().slice(0, 10);
+  const porVencer = portadaLimpia
+    ? promos
+        .filter((p) => p.vence && p.vence >= hoy && p.vence <= enSieteDias && !destacadas.includes(p))
+        .slice(0, 4)
+    : [];
+
+  const aparte = new Set([...destacadas, ...porVencer]);
+  const resto = promos.filter((p) => !aparte.has(p));
 
   const paginas = Math.max(1, Math.ceil(resto.length / POR_PAGINA));
   const pagina = Math.min(Math.max(1, Number(sp.p) || 1), paginas);
@@ -82,8 +94,18 @@ export default async function Inicio({ searchParams }) {
           <>
             <h2 className="seccion">Lo mejor de hoy</h2>
             <div className="grid destacadas">{destacadas.map(tarjeta)}</div>
-            <h2 className="seccion">Todas las promos</h2>
           </>
+        )}
+
+        {porVencer.length > 0 && (
+          <>
+            <h2 className="seccion urge">Se vencen esta semana</h2>
+            <div className="grid">{porVencer.map(tarjeta)}</div>
+          </>
+        )}
+
+        {(destacadas.length > 0 || porVencer.length > 0) && (
+          <h2 className="seccion">Todas las promos</h2>
         )}
 
         {promos.length === 0 ? (

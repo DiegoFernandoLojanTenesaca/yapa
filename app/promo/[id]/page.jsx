@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import TarjetaPromo from '../../TarjetaPromo.jsx';
 import BotonCodigo from '../../BotonCodigo.jsx';
+import Compartir from '../../Compartir.jsx';
 import PieDePagina from '../../PieDePagina.jsx';
 import Icono from '../../Icono.jsx';
 import { alternarFavorito } from '../../acciones.js';
@@ -128,6 +129,8 @@ export default async function FichaPromo({ params }) {
                 </form>
               )}
             </div>
+
+            <Compartir titulo={promo.titulo} comercio={promo.comercio} />
 
             <p className="fichaNota">
               Yapa no canjea la promo: te lleva al comercio. Confirmá condiciones y vigencia

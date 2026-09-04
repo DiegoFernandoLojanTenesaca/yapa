@@ -4,7 +4,8 @@ import TarjetaPromo from '../TarjetaPromo.jsx';
 import Icono from '../Icono.jsx';
 import PieDePagina from '../PieDePagina.jsx';
 import { guardarMisBancos } from '../acciones.js';
-import { sesion } from '../../lib/almacen.js';
+import { sesion, comerciosSeguidos } from '../../lib/almacen.js';
+import { slugComercio } from '../../lib/comercios.js';
 import { promosPublicas, catalogos } from '../../lib/consultas.js';
 
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,17 @@ export default async function MiCuenta() {
 
   const mios = s.perfil?.bancos ?? [];
   const paraMi = mios.length ? todas.filter((p) => p.banco && mios.includes(p.banco)) : [];
+
+  const seguidos = await comerciosSeguidos(s.user.id);
+  const deSeguidos = seguidos.length
+    ? todas
+        .filter((p) => seguidos.includes(slugComercio(p.comercio)))
+        .sort((a, b) => (b.actualizada ?? '').localeCompare(a.actualizada ?? ''))
+    : [];
+
+  // "Nueva" = entró en la última semana. Es lo que hace que valga seguir un comercio.
+  const haceUnaSemana = new Date(Date.now() - 7 * 86400000).toISOString();
+  const novedades = deSeguidos.filter((p) => (p.actualizada ?? '') >= haceUnaSemana);
 
   // Lo que se vence en la semana, de lo que el usuario guardó.
   const hoy = new Date().toISOString().slice(0, 10);
@@ -53,6 +65,10 @@ export default async function MiCuenta() {
             <div className="n">{paraMi.length}</div>
             <div className="e">Promos para tus tarjetas</div>
           </div>
+          <div className="kpi">
+            <div className="n">{seguidos.length}</div>
+            <div className="e">Comercios que seguís</div>
+          </div>
           <div className={`kpi${porVencer.length ? ' urgente' : ''}`}>
             <div className="n">{porVencer.length}</div>
             <div className="e">Se vencen esta semana</div>
@@ -65,6 +81,45 @@ export default async function MiCuenta() {
             se {porVencer.length === 1 ? 'vence' : 'vencen'} en los próximos 7 días:{' '}
             {porVencer.map((p) => p.comercio).join(', ')}.
           </div>
+        )}
+
+        <h2 className="seccion">
+          Comercios que seguís ({seguidos.length})
+          <Link className="btn sec chico" href="/comercios">
+            Buscar comercios
+          </Link>
+        </h2>
+
+        {seguidos.length === 0 ? (
+          <div className="vacio">
+            <b>No seguís ningún comercio todavía</b>
+            <span>
+              Entrá a cualquier comercio y tocá <b style={{ display: 'inline' }}>+ Seguir</b>.
+              Sus promos nuevas te van a aparecer acá.
+            </span>
+            <Link className="btn" href="/comercios">
+              Ver comercios
+            </Link>
+          </div>
+        ) : (
+          <>
+            {novedades.length > 0 && (
+              <div className="aviso ok">
+                {novedades.length} {novedades.length === 1 ? 'promo nueva' : 'promos nuevas'} esta
+                semana en los comercios que seguís.
+              </div>
+            )}
+            <div className="grid">
+              {(novedades.length ? novedades : deSeguidos).slice(0, 8).map((p) => (
+                <TarjetaPromo
+                  key={p.id}
+                  promo={p}
+                  esFavorita={favoritas.some((f) => f.id === p.id)}
+                  haySesion
+                />
+              ))}
+            </div>
+          </>
         )}
 
         <h2 className="seccion">Mis tarjetas</h2>
