@@ -374,3 +374,87 @@ a.comercio:hover{text-decoration:underline}
 /* ═══════════ sección urgente ═══════════ */
 h2.seccion.urge{color:var(--alerta)}
 h2.seccion.urge::after{background:color-mix(in srgb,var(--alerta) 35%,var(--line))}
+
+/* ═══════════ accesibilidad ═══════════ */
+/* Enlace que solo aparece al tabular: deja saltar el menú con el teclado. */
+.saltar{position:absolute;left:-9999px;top:8px;z-index:50;background:var(--marca);
+  color:#fff;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13.5px;
+  text-decoration:none}
+.saltar:focus{left:14px}
+:focus-visible{outline:2px solid var(--amarillo);outline-offset:2px;border-radius:6px}
+.top :focus-visible{outline-color:#fff}
+
+/* ═══════════ 404 ═══════════ */
+.perdido{text-align:center;max-width:470px;margin:64px auto;display:flex;
+  flex-direction:column;align-items:center;gap:11px}
+.numeroto{font-size:74px;font-weight:800;letter-spacing:-.05em;color:var(--marca);
+  line-height:1}
+.perdido h1{font-size:24px}
+.perdido p{color:var(--tx2);font-size:14.5px;line-height:1.55}
+
+/* ═══════════ teléfono ═══════════ */
+@media (max-width: 720px) {
+  .wrap{padding:0 14px}
+
+  /* El menú no entra en una pantalla angosta: se desliza en vez de romperse. */
+  .top .wrap{gap:8px;height:54px}
+  .marca{font-size:18px}
+  .marca svg{width:26px;height:26px}
+  .nav{overflow-x:auto;scrollbar-width:none;flex:1;justify-content:flex-end}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a,.nav form button{padding:6px 9px;font-size:13px;white-space:nowrap}
+
+  .barra{top:54px}
+  .barra .pista{padding:9px 0}
+  .chip{padding:6px 12px;font-size:12.5px}
+  /* Con el dedo se arrastra: las flechas solo estorban. */
+  .flecha{display:none}
+
+  .hero{padding:20px 0 2px}
+  .hero h1{font-size:23px}
+  .hero h1 br{display:none}
+  .buscador{gap:7px}
+  .buscador input[type=search]{flex:1 1 100%}
+
+  .barraOrden{gap:9px}
+  .orden{margin-left:0;width:100%}
+  .orden select{flex:1;min-width:0;width:100%}
+
+  .grid,.grid.destacadas{grid-template-columns:1fr;gap:12px}
+  .destacadas .foto img{aspect-ratio:16/9}
+
+  .ficha{padding:14px;gap:18px}
+  .fichaTexto h1{font-size:20px}
+  .rebajaGrande{font-size:22px;padding:6px 13px}
+  .cajaCodigo{gap:10px}
+  .cajaCodigo strong{font-size:19px}
+
+  .perfil{gap:12px}
+  .avatar{width:46px;height:46px;font-size:19px}
+  .tarjetas{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px}
+  .kpi{padding:11px 13px}
+  .kpi .n{font-size:22px}
+
+  .cabComercio{gap:13px}
+  .logoGrande{width:50px;height:50px}
+  .cabComercio h1{font-size:22px}
+  .accionSeguir{margin-left:0;width:100%}
+  .accionSeguir .btn{width:100%}
+
+  .rejillaComercios{grid-template-columns:1fr}
+  .dosCol{grid-template-columns:1fr}
+  .fuentes{grid-template-columns:1fr}
+  .pag{min-width:34px;height:34px;padding:0 10px;font-size:13px}
+  .numeroto{font-size:58px}
+  .pie-cols{gap:22px}
+}
+
+/* Pantallas muy angostas: que el precio y el botón no se pisen. */
+@media (max-width: 380px) {
+  .pie{flex-direction:column;align-items:flex-start;gap:8px}
+  .pie .btn{width:100%}
+}
+
+/* El icono conserva sus colores; sobre el rojo de la cabecera se separa con
+   un aro blanco en vez de repintarlo y perder la marca. */
+.marca svg{box-shadow:0 0 0 2px rgba(255,255,255,.92)}

@@ -13,6 +13,29 @@ import { logoDe } from '../../../lib/logo.js';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Vista previa al compartir. No define `title`, así que la pestaña sigue
+ * diciendo solo "Yapa"; esto es lo que ve quien recibe el enlace.
+ */
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const promo = await obtenerPromo(decodeURIComponent(id));
+  if (!promo) return {};
+
+  // Sin foto propia, el logo del comercio: un enlace sin imagen se ve muerto.
+  const imagen = promo.imagen ?? logoDe(promo.url);
+
+  return {
+    description: promo.detalle ?? promo.titulo,
+    openGraph: {
+      title: `${promo.comercio}: ${promo.titulo}`,
+      description: promo.detalle ?? 'Mirá esta promo en Yapa',
+      images: imagen ? [imagen] : undefined,
+      type: 'article',
+    },
+  };
+}
+
 const enLetras = (iso) =>
   new Date(iso + 'T12:00:00').toLocaleDateString('es-EC', {
     day: 'numeric', month: 'long', year: 'numeric',
