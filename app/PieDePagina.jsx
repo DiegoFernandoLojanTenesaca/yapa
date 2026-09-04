@@ -41,7 +41,7 @@ export default function PieDePagina({ total, conCodigo }) {
             antes de pagar.
           </p>
           <p className="pie-abajo">
-            <span>© {new Date().getFullYear()} Yapa · Hecho en Ecuador 🇪🇨</span>
+            <span>© {new Date().getFullYear()} Yapa · Hecho en Ecuador</span>
             <Link href="/">Promos</Link>
             <Link href="/mi-cuenta">Mi cuenta</Link>
           </p>

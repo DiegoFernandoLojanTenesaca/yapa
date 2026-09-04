@@ -3,6 +3,8 @@ import { scrape as scrapeProdubanco } from './scrapers/produbanco.js';
 import { scrape as scrapePacifico } from './scrapers/pacifico.js';
 import { scrape as scrapeCupones } from './scrapers/cuponesecuador.js';
 import { scrape as scrapeEncuentra } from './scrapers/encuentrapromo.js';
+import { armar as armarJuegos } from './scrapers/juegos.js';
+import { scrape as scrapeCursos } from './scrapers/cursos.js';
 import { rebaja } from './lib/rebaja.js';
 import { logoDe } from './lib/logo.js';
 
@@ -208,6 +210,75 @@ assert.equal(
 );
 
 assert.deepEqual(scrapeEncuentra('<div>nada</div>'), [], 'html desconocido -> vacío');
+
+/* ══════════════════════ Juegos (API de CheapShark) ══════════════════════ */
+
+const TIENDAS = [
+  { storeID: '1', storeName: 'Steam' },
+  { storeID: '25', storeName: 'Epic Games Store' },
+];
+
+const ju = armarJuegos(
+  [
+    { gameID: '254193', title: 'Beach Invasion 1944', storeID: '25', dealID: 'aBc%3D',
+      salePrice: '0.00', normalPrice: '9.99', savings: '100.000000', thumb: 'https://x/capsule.jpg' },
+    { gameID: '999', title: 'Juego Rebajado', storeID: '1', dealID: 'xYz',
+      salePrice: '4.99', normalPrice: '19.99', savings: '75.037518', thumb: null },
+    { gameID: '111', title: 'Casi Sin Rebaja', storeID: '1', dealID: 'q',
+      salePrice: '9.50', normalPrice: '10.00', savings: '5.000000', thumb: null },
+  ],
+  TIENDAS
+);
+
+assert.equal(ju.length, 2, 'descarta las rebajas menores al 20%');
+assert.equal(ju[0].comercio, 'Epic Games Store', 'traduce el storeID a nombre de tienda');
+assert.equal(ju[0].detalle, 'Gratis · antes $9.99');
+assert.equal(ju[0].categoria, 'juegos');
+assert.equal(ju[0].url, 'https://www.cheapshark.com/redirect?dealID=aBc%3D');
+assert.equal(ju[1].detalle, '75% OFF · de $19.99 a $4.99');
+assert.equal(rebaja(ju[1]), '75%', 'la insignia toma el porcentaje, no el precio');
+
+/* ══════════════════════ Cursos ══════════════════════ */
+
+const HTML_CURSOS = `
+<article class="cards">
+  <section class="card">
+    <label class="ui green disc-fee label">English</label>
+    <div class="content">
+      <div class="header">
+        <a class="card-header" href="https://www.couponami.com/business/projectmanagementdiploma">Professional Diploma in Project Management</a>
+      </div>
+      <div class="meta">
+        <span class="category">Yesterday</span>
+        <span><span>$</span><span style="text-decoration: line-through;">64</span>-&gt;<span>$</span><span>0</span></span>
+      </div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="content">
+      <div class="header"><a class="card-header" href="https://x.com/cursos/php-basico">PHP desde cero</a></div>
+      <div class="meta"><span>$100</span>-&gt;<span>$25</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="content">
+      <div class="header"><a class="card-header" href="https://x.com/cursos/sin-precio">Curso sin precio</a></div>
+      <div class="meta"><span>Yesterday</span></div>
+    </div>
+  </section>
+</article>`;
+
+const cur = scrapeCursos(HTML_CURSOS);
+assert.equal(cur.length, 2, 'descarta el curso sin rebaja legible');
+
+assert.equal(cur[0].id, 'cursos:projectmanagementdiploma');
+assert.equal(cur[0].comercio, 'Udemy');
+assert.equal(cur[0].detalle, 'Gratis · antes $64 · en inglés');
+assert.equal(cur[0].categoria, 'educacion');
+assert.equal(cur[1].detalle, '75% OFF · de $100 a $25');
+assert.equal(rebaja(cur[1]), '75%');
+
+assert.deepEqual(scrapeCursos('<div>nada</div>'), [], 'html desconocido -> vacío');
 
 /* ══════════════════════ logo de respaldo ══════════════════════ */
 

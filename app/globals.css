@@ -163,7 +163,7 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
   border:1px dashed var(--line);border-radius:var(--r)}
 .vacio b{display:block;font-size:16px;color:var(--tx);margin-bottom:5px}
 .centro{max-width:400px;margin:56px auto}
-.py{padding-top:4px;padding-bottom:64px}
+.py{padding-top:4px;padding-bottom:40px}
 
 /* ═══════════ paginación ═══════════ */
 .paginacion{display:flex;gap:6px;align-items:center;justify-content:center;
@@ -208,7 +208,7 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
   color:var(--tx2);text-align:center;line-height:1.2}
 
 /* ═══════════ pie de página ═══════════ */
-.pie-sitio{border-top:1px solid var(--line);background:var(--panel);margin-top:56px;
+.pie-sitio{border-top:1px solid var(--line);background:var(--panel);margin-top:0;
   padding:34px 0 26px}
 .pie-cols{display:flex;gap:32px;justify-content:space-between;flex-wrap:wrap}
 .pie-marca{display:flex;gap:13px;align-items:flex-start;max-width:430px}
@@ -224,3 +224,50 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
   font-size:12.5px}
 .pie-abajo a{color:var(--tx2);text-decoration:none;font-weight:650}
 .pie-abajo a:hover{color:var(--ac)}
+
+/* ═══════════ iconos de categoría ═══════════ */
+.chip .ico{flex:none;opacity:.85}
+.chip.on .ico{opacity:1}
+.btn .ico{margin-right:-1px}
+
+/* ═══════════ mi cuenta ═══════════ */
+.perfil{display:flex;align-items:center;gap:15px;padding-top:24px}
+.avatar{width:54px;height:54px;border-radius:16px;background:var(--marca);color:#fff;
+  display:grid;place-items:center;font-size:23px;font-weight:800;flex:none}
+.kpi .nota{font-size:11px;color:var(--tx3);margin-top:3px}
+.kpi.urgente .n{color:var(--alerta)}
+.aviso.alerta{background:color-mix(in srgb,var(--alerta) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--alerta) 40%,transparent);color:var(--alerta)}
+
+.fichas{display:flex;gap:9px;flex-wrap:wrap}
+.ficha{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+  border-radius:22px;padding:8px 15px;cursor:pointer;font-size:13.5px;font-weight:650;
+  color:var(--tx2);margin:0;background:var(--bg);user-select:none}
+.ficha:hover{border-color:var(--tx3);color:var(--tx)}
+.ficha input{width:16px;height:16px;flex:none;accent-color:var(--marca)}
+.ficha:has(input:checked){border-color:var(--marca);color:var(--tx);
+  background:color-mix(in srgb,var(--marca) 9%,transparent)}
+
+h2.seccion .btn{margin-left:auto;text-transform:none;letter-spacing:0}
+h2.seccion:has(.btn)::after{display:none}
+
+/* ═══════════ panel ═══════════ */
+.fuentes{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:13px}
+.fuente{margin-bottom:0;display:flex;flex-direction:column}
+.fuente .btn{align-self:flex-start;margin-top:auto}
+.malFuente{border-color:color-mix(in srgb,var(--mal) 45%,var(--line))}
+.cabFuente{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.cabFuente h2{margin-right:auto;font-size:16px}
+.numFuente{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12.5px;
+  color:var(--tx2)}
+.numFuente b{color:var(--tx);font-size:17px;font-weight:800;margin-right:3px}
+
+.dosCol{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:0 22px}
+.barraComercio{display:grid;grid-template-columns:1fr 90px 34px;gap:11px;align-items:center;
+  padding:7px 0;font-size:13.5px}
+.barraComercio a{text-decoration:none;color:var(--tx);font-weight:650;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.barraComercio a:hover{color:var(--ac)}
+.barraComercio .riel{height:7px;background:var(--panel2);border-radius:5px;overflow:hidden}
+.barraComercio .relleno{height:100%;background:var(--marca);border-radius:5px}
+.barraComercio b{text-align:right;font-weight:800;color:var(--tx2);font-size:13px}

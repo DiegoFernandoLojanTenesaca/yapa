@@ -2,19 +2,21 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import Icono from './Icono.jsx';
 
 const ETIQUETAS = {
-  restaurantes: '🍔 Restaurantes',
-  supermercados: '🛒 Supermercados',
-  compras: '🛍️ Compras',
-  delivery: '🛵 Delivery',
-  viajes: '✈️ Viajes',
-  entretenimiento: '🎬 Entretenimiento',
-  salud: '💊 Salud',
-  educacion: '🎓 Educación',
-  hogar: '🛋️ Hogar',
-  vehiculos: '🚗 Vehículos',
-  otros: '✨ Otros',
+  restaurantes: 'Restaurantes',
+  supermercados: 'Supermercados',
+  compras: 'Compras',
+  delivery: 'Delivery',
+  juegos: 'Juegos',
+  viajes: 'Viajes',
+  entretenimiento: 'Entretenimiento',
+  salud: 'Salud',
+  educacion: 'Educación',
+  hogar: 'Hogar',
+  vehiculos: 'Vehículos',
+  otros: 'Otros',
 };
 
 /** Barra horizontal fija bajo la cabecera, con flechas para recorrerla. */
@@ -72,6 +74,7 @@ export default function BarraCategorias({ categorias, porCategoria, activa, para
               href={conservar({ categoria: c })}
               className={`chip${activa === c ? ' on' : ''}`}
             >
+              <Icono nombre={c} />
               <b>{ETIQUETAS[c] ?? c}</b>
               <span className="n">{porCategoria[c]}</span>
             </Link>
