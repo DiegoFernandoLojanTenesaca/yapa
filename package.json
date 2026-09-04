@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "scrape": "node scrape.js",
+    "scrape": "node --env-file-if-exists=.env.local scrape.js",
     "test": "node test.js"
   },
   "dependencies": {
