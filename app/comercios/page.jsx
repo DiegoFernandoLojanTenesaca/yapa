@@ -4,6 +4,7 @@ import Icono from '../Icono.jsx';
 import BuscadorComercios from './BuscadorComercios.jsx';
 import { comercios, catalogos } from '../../lib/consultas.js';
 import { logoDe } from '../../lib/logo.js';
+import { normalizar } from '../../lib/texto.js';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,8 +12,8 @@ export default async function Comercios({ searchParams }) {
   const sp = await searchParams;
   const [todos, cat] = await Promise.all([comercios(), catalogos()]);
 
-  const q = (sp.q ?? '').trim().toLowerCase();
-  const lista = q ? todos.filter((c) => c.nombre.toLowerCase().includes(q)) : todos;
+  const q = normalizar((sp.q ?? '').trim());
+  const lista = q ? todos.filter((c) => normalizar(c.nombre).includes(q)) : todos;
 
   return (
     <>

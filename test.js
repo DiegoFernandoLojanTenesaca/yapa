@@ -8,6 +8,7 @@ import { scrape as scrapeCursos } from './scrapers/cursos.js';
 import { rebaja, valorRebaja } from './lib/rebaja.js';
 import { logoDe } from './lib/logo.js';
 import { slugComercio } from './lib/comercios.js';
+import { normalizar } from './lib/texto.js';
 
 /* ══════════════════════ Produbanco ══════════════════════ */
 // Fragmento real. Si el parser se rompe esto avisa sin depender de la red.
@@ -317,6 +318,26 @@ assert.deepEqual(
   ['70% off', '2x1', '$5 off', 'Doble millas'],
   'mayor descuento primero, lo incomparable después y lo que no tiene rebaja al final'
 );
+
+/* ══════════════════════ búsqueda con tildes ══════════════════════ */
+// Antes de esto, buscar "pacifico" daba 0 resultados y "Pacífico" daba 10.
+
+assert.equal(normalizar('Banco del Pacífico'), 'banco del pacifico');
+assert.equal(normalizar('Educación'), 'educacion');
+assert.equal(normalizar('Café'), 'cafe');
+assert.equal(normalizar(null), '', 'texto vacío no rompe la búsqueda');
+
+// Lo que importa: la búsqueda encuentra igual se escriba con tilde o sin ella.
+const buscarEn = (textos, q) =>
+  textos.filter((t) => normalizar(t).includes(normalizar(q)));
+
+const CATALOGO = ['Banco del Pacífico', 'Educación', 'El Mercado Cafetería', 'KFC'];
+
+assert.deepEqual(buscarEn(CATALOGO, 'pacifico'), ['Banco del Pacífico'], 'sin tilde encuentra con tilde');
+assert.deepEqual(buscarEn(CATALOGO, 'Pacífico'), ['Banco del Pacífico'], 'con tilde también');
+assert.deepEqual(buscarEn(CATALOGO, 'EDUCACION'), ['Educación'], 'ignora mayúsculas y tildes juntas');
+assert.deepEqual(buscarEn(CATALOGO, 'cafe'), ['El Mercado Cafetería']);
+assert.deepEqual(buscarEn(CATALOGO, 'zzz'), [], 'lo que no está no aparece');
 
 /* ══════════════════════ slug de comercio ══════════════════════ */
 
