@@ -3,6 +3,7 @@ import Filtros from './Filtros.jsx';
 import TarjetaPromo from './TarjetaPromo.jsx';
 import BarraCategorias from './BarraCategorias.jsx';
 import Paginacion from './Paginacion.jsx';
+import PieDePagina from './PieDePagina.jsx';
 import { sesion } from '../lib/almacen.js';
 import { promosPublicas, catalogos, idsFavoritas } from '../lib/consultas.js';
 
@@ -18,7 +19,6 @@ export default async function Inicio({ searchParams }) {
     promosPublicas({
       q: sp.q,
       categoria: sp.categoria,
-      origen: sp.origen,
       ciudad: sp.ciudad,
       soloConCodigo: sp.codigo === '1',
       favoritas: sp.favoritas === '1',
@@ -28,7 +28,7 @@ export default async function Inicio({ searchParams }) {
     idsFavoritas(s?.user.id),
   ]);
 
-  const hayFiltro = !!(sp.q || sp.categoria || sp.origen || sp.ciudad || sp.favoritas || sp.codigo);
+  const hayFiltro = !!(sp.q || sp.categoria || sp.ciudad || sp.favoritas || sp.codigo);
 
   // Las destacadas van fuera del listado, y solo en la primera página sin filtros.
   const destacadas = hayFiltro || sp.p ? [] : promos.filter((p) => p.destacada).slice(0, 3);
@@ -44,7 +44,6 @@ export default async function Inicio({ searchParams }) {
       promo={p}
       esFavorita={favoritas.has(p.id)}
       haySesion={!!s}
-      origen={cat.etiquetas[p.fuente]}
     />
   );
 
@@ -59,8 +58,7 @@ export default async function Inicio({ searchParams }) {
             Todas las promos de Ecuador, <em>en un solo lugar</em>.
           </h1>
           <p>
-            {cat.origenes.length} {cat.origenes.length === 1 ? 'fuente' : 'fuentes'} ·
-            actualizado todos los días
+  Promos de bancos, comercios y delivery · actualizado todos los días
           </p>
 
           <Suspense fallback={null}>
@@ -95,6 +93,8 @@ export default async function Inicio({ searchParams }) {
           </>
         )}
       </div>
+
+      <PieDePagina total={promos.length} conCodigo={cat.conCodigo} />
     </>
   );
 }

@@ -67,21 +67,16 @@ Cualquier host de Node sirve igual; solo hay que apuntarle un cron a
 
 ## Fuentes
 
-| Fuente | Estado | Notas |
-|---|---|---|
-| Produbanco | ✅ 57 promos | HTML plano, trae fecha de vencimiento |
-| Banco del Pacífico | ✅ 10 promos | Server-rendered; no publica vigencia en el listado |
-| Banco Guayaquil | ❌ bloqueado | Radware Bot Manager. No se evade: ahí se rompe la protección legal |
-| Banco Pichincha | ❌ inviable | Sitio Salesforce LWR; los datos salen de APIs con sesión |
-| Diners Club (blu benefits) | ❌ 403 | Rechaza peticiones automatizadas |
-| PedidosYa | ❌ 403 | Sus cupones además son personalizados por usuario y ciudad |
+El detalle de qué se recolecta y desde dónde vive en `scrapers/` y en el panel
+(`/admin` → *De dónde salen los datos*), que es donde hace falta. Acá no se
+publica el mapa.
 
-Lo bloqueado se carga a mano desde el panel — que es justamente para lo que está
-el formulario de *Nueva promo*.
+Lo que no se puede recolectar se carga a mano desde el panel — para eso está el
+formulario de *Nueva promo*.
 
 ### Agregar una fuente
 
-1. Crear `scrapers/<nombre>.js` exportando `fuente`, `banco`, `url` y `scrape(html)`.
+1. Crear `scrapers/<nombre>.js` exportando `fuente`, `origen`, `banco`, `url` y `scrape(html)`.
 2. Sumarlo al array `FUENTES` en `lib/scraping.js`.
 3. Agregar un fragmento real de su HTML a `test.js`.
 

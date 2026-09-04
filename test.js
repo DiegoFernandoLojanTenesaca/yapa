@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { scrape as scrapeProdubanco } from './scrapers/produbanco.js';
 import { scrape as scrapePacifico } from './scrapers/pacifico.js';
 import { scrape as scrapeCupones } from './scrapers/cuponesecuador.js';
+import { scrape as scrapeEncuentra } from './scrapers/encuentrapromo.js';
 import { rebaja } from './lib/rebaja.js';
+import { logoDe } from './lib/logo.js';
 
 /* ══════════════════════ Produbanco ══════════════════════ */
 // Fragmento real. Si el parser se rompe esto avisa sin depender de la red.
@@ -162,6 +164,57 @@ assert.equal(
 assert.equal(cu[1].vence, null, 'sin fecha publicada -> null');
 
 assert.deepEqual(scrapeCupones('<div>nada</div>'), [], 'html desconocido -> vacío');
+
+/* ══════════════════════ EncuentraPromo ══════════════════════ */
+
+const HTML_ENCUENTRA = `
+<div class="grid-wrapper">
+  <div class="col-12 grid-item">
+    <div class="product-teaser"><div class="product-teaser-container">
+      <a href="/ofertas/ver/cupon-60-pizza-biglovers">
+        <div class="post-image product-image">
+          <div class="product-badge"><span class="badge badge-pill badge-success">Descuento 60%</span></div>
+          <div class="field field-image"><div class="field-item">
+            <img loading="lazy" src="/sites/default/files/styles/max_325x325/public/epromo/deal.png.webp?itok=0_qK7WsR" />
+          </div></div>
+          <div class="flag js-flag-epromo-wishlist-12143 action-flag"><a href="/flag/x">Favorito</a></div>
+        </div>
+      </a>
+      <div class="product-meta-wrap"><div class="product-meta">
+        <div class="product-title mt-2">
+          <a class="product-title-link" href="/ofertas/ver/cupon-60-pizza-biglovers">
+            <div class="field field-name field-item">Cupón de 60% en Pizza Biglovers</div>
+          </a>
+        </div>
+        <div class="product-attribute"><a class="small" href="/tiendas/ver/pizza-hut">Pizza Hut</a></div>
+      </div></div>
+    </div></div>
+  </div>
+</div>`;
+
+const en = scrapeEncuentra(HTML_ENCUENTRA);
+assert.equal(en.length, 1, 'encuentrapromo: 1 promo');
+
+assert.equal(en[0].id, 'encuentrapromo:12143', 'el id sale del nodo de Drupal, no del slug');
+assert.equal(en[0].comercio, 'Pizza Hut');
+assert.equal(en[0].titulo, 'Cupón de 60% en Pizza Biglovers');
+assert.equal(en[0].detalle, 'Descuento 60%', 'la insignia alimenta la rebaja grande');
+assert.equal(rebaja(en[0]), '60%', 'y de ahí sale el número de la tarjeta');
+assert.equal(en[0].categoria, 'restaurantes');
+assert.equal(en[0].banco, null);
+assert.equal(
+  en[0].imagen,
+  'https://encuentrapromo.com.ec/sites/default/files/styles/max_325x325/public/epromo/deal.png.webp?itok=0_qK7WsR'
+);
+
+assert.deepEqual(scrapeEncuentra('<div>nada</div>'), [], 'html desconocido -> vacío');
+
+/* ══════════════════════ logo de respaldo ══════════════════════ */
+
+assert.equal(logoDe('https://www.kfc.com.ec/'), 'https://icons.duckduckgo.com/ip3/kfc.com.ec.ico', 'quita el www');
+assert.equal(logoDe('https://pizzahut.com.ec/home?x=1'), 'https://icons.duckduckgo.com/ip3/pizzahut.com.ec.ico');
+assert.equal(logoDe(null), null, 'sin url no hay logo, la tarjeta cae al nombre');
+assert.equal(logoDe('no-es-una-url'), null, 'url inválida no rompe la tarjeta');
 
 /* ══════════════════════ el número de la promo ══════════════════════ */
 

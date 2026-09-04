@@ -1,6 +1,7 @@
 import BotonCodigo from './BotonCodigo.jsx';
 import { alternarFavorito } from './acciones.js';
 import { rebaja } from '../lib/rebaja.js';
+import { logoDe } from '../lib/logo.js';
 
 const diasPara = (iso) =>
   iso ? Math.round((new Date(iso) - new Date(new Date().toISOString().slice(0, 10))) / 86400000) : null;
@@ -8,9 +9,10 @@ const diasPara = (iso) =>
 const enLetras = (iso) =>
   new Date(iso + 'T12:00:00').toLocaleDateString('es-EC', { day: 'numeric', month: 'short' });
 
-export default function TarjetaPromo({ promo, esFavorita, haySesion, origen }) {
+export default function TarjetaPromo({ promo, esFavorita, haySesion }) {
   const d = diasPara(promo.vence);
   const numero = rebaja(promo);
+  const logo = promo.imagen ? null : logoDe(promo.url);
 
   return (
     <article className={`promo${promo.destacada ? ' esDestacada' : ''}`}>
@@ -18,8 +20,11 @@ export default function TarjetaPromo({ promo, esFavorita, haySesion, origen }) {
         {promo.imagen ? (
           <img src={promo.imagen} alt="" loading="lazy" />
         ) : (
-          // Los agregadores publican el código, no una foto de la promo.
-          <span className="inicial">{promo.comercio}</span>
+          // Sin imagen propia: el logo del comercio como portada.
+          <div className="marcaComercio">
+            {logo && <img className="logo" src={logo} alt="" loading="lazy" />}
+            <span className="inicial">{promo.comercio}</span>
+          </div>
         )}
 
         {promo.destacada && <span className="cinta">Destacada</span>}
@@ -46,11 +51,8 @@ export default function TarjetaPromo({ promo, esFavorita, haySesion, origen }) {
 
         <div className="meta">
           <span className="pill">{promo.categoria}</span>
-          {promo.banco ? (
-            <span className="pill">{promo.banco}</span>
-          ) : (
-            origen && <span className="pill">{origen}</span>
-          )}
+          {/* Solo el banco, que le dice al usuario qué tarjeta necesita. */}
+          {promo.banco && <span className="pill">{promo.banco}</span>}
           {promo.ciudad !== 'todo_el_pais' && (
             <span className="pill">{promo.ciudad.replace(/_/g, ' ')}</span>
           )}
