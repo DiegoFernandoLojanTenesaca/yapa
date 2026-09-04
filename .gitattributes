@@ -1,0 +1,3 @@
+# El cron corre en Linux y el desarrollo en Windows: sin esto, cada corrida
+# reescribiría data/*.json entero solo por el fin de línea.
+* text=auto eol=lf
