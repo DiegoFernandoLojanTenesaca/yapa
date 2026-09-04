@@ -3,6 +3,7 @@ import Filtros from './Filtros.jsx';
 import TarjetaPromo from './TarjetaPromo.jsx';
 import BarraCategorias from './BarraCategorias.jsx';
 import Paginacion from './Paginacion.jsx';
+import Orden from './Orden.jsx';
 import PieDePagina from './PieDePagina.jsx';
 import { sesion } from '../lib/almacen.js';
 import { promosPublicas, catalogos, idsFavoritas } from '../lib/consultas.js';
@@ -21,6 +22,7 @@ export default async function Inicio({ searchParams }) {
       categoria: sp.categoria,
       ciudad: sp.ciudad,
       soloConCodigo: sp.codigo === '1',
+      orden: sp.orden,
       favoritas: sp.favoritas === '1',
       usuarioId: s?.user.id,
     }),
@@ -66,10 +68,15 @@ export default async function Inicio({ searchParams }) {
           </Suspense>
         </section>
 
-        <p className="conteo">
-          {promos.length} {promos.length === 1 ? 'promoción vigente' : 'promociones vigentes'}
-          {paginas > 1 && ` · página ${pagina} de ${paginas}`}
-        </p>
+        <div className="barraOrden">
+          <p className="conteo" style={{ margin: 0 }}>
+            {promos.length} {promos.length === 1 ? 'promoción vigente' : 'promociones vigentes'}
+            {paginas > 1 && ` · página ${pagina} de ${paginas}`}
+          </p>
+          <Suspense fallback={null}>
+            <Orden />
+          </Suspense>
+        </div>
 
         {destacadas.length > 0 && (
           <>

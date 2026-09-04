@@ -5,8 +5,9 @@ import { scrape as scrapeCupones } from './scrapers/cuponesecuador.js';
 import { scrape as scrapeEncuentra } from './scrapers/encuentrapromo.js';
 import { armar as armarJuegos } from './scrapers/juegos.js';
 import { scrape as scrapeCursos } from './scrapers/cursos.js';
-import { rebaja } from './lib/rebaja.js';
+import { rebaja, valorRebaja } from './lib/rebaja.js';
 import { logoDe } from './lib/logo.js';
+import { slugComercio } from './lib/comercios.js';
 
 /* ══════════════════════ Produbanco ══════════════════════ */
 // Fragmento real. Si el parser se rompe esto avisa sin depender de la red.
@@ -295,5 +296,39 @@ assert.equal(rebaja({ titulo: 'Promo', detalle: '2 x 1 de lunes a jueves' }), '2
 assert.equal(rebaja({ titulo: '$10 de descuento en tu primera compra' }), '$10');
 assert.equal(rebaja({ titulo: '15 % off en proteínas' }), '15%', 'el porcentaje gana sobre otros números');
 assert.equal(rebaja({ titulo: 'Doble plan de recompensas', detalle: null }), null, 'sin número -> sin insignia');
+
+/* ══════════════════════ orden por descuento ══════════════════════ */
+
+assert.equal(valorRebaja({ titulo: '50% de descuento' }), 50);
+assert.equal(valorRebaja({ titulo: 'Llevá 2x1' }), 50, 'un 2x1 te ahorra la mitad');
+assert.equal(valorRebaja({ titulo: '3x2 en helados' }), 33, 'un 3x2 ahorra un tercio');
+assert.equal(valorRebaja({ titulo: '$10 de descuento' }), 0, 'un monto suelto no se puede comparar');
+assert.equal(valorRebaja({ titulo: 'Sin número' }), -1, 'sin rebaja va al fondo');
+
+const ordenadas = [
+  { titulo: '$5 off' },
+  { titulo: 'Doble millas' },
+  { titulo: '70% off' },
+  { titulo: '2x1' },
+].sort((a, b) => valorRebaja(b) - valorRebaja(a));
+
+assert.deepEqual(
+  ordenadas.map((p) => p.titulo),
+  ['70% off', '2x1', '$5 off', 'Doble millas'],
+  'mayor descuento primero, lo incomparable después y lo que no tiene rebaja al final'
+);
+
+/* ══════════════════════ slug de comercio ══════════════════════ */
+
+assert.equal(slugComercio('Banco del Pacífico'), 'banco-del-pacifico', 'saca tildes');
+assert.equal(slugComercio('KFC'), 'kfc');
+assert.equal(slugComercio('Sweet & Coffee'), 'sweet-coffee', 'los símbolos se vuelven guiones');
+assert.equal(slugComercio('  Mi  Comisariato  '), 'mi-comisariato', 'sin guiones colgando');
+assert.equal(slugComercio(null), '', 'nombre vacío no rompe el enlace');
+assert.equal(
+  slugComercio(slugComercio('Banco del Pacífico')),
+  'banco-del-pacifico',
+  'aplicarlo dos veces da lo mismo: los enlaces se resuelven solos'
+);
 
 console.log('✓ todo bien');

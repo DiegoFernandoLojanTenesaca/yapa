@@ -3,6 +3,7 @@ import BotonCodigo from './BotonCodigo.jsx';
 import { alternarFavorito } from './acciones.js';
 import { rebaja } from '../lib/rebaja.js';
 import { logoDe } from '../lib/logo.js';
+import { slugComercio } from '../lib/comercios.js';
 
 const diasPara = (iso) =>
   iso ? Math.round((new Date(iso) - new Date(new Date().toISOString().slice(0, 10))) / 86400000) : null;
@@ -46,7 +47,9 @@ export default function TarjetaPromo({ promo, esFavorita, haySesion }) {
       </div>
 
       <div className="cuerpo">
-        <div className="comercio">{promo.comercio}</div>
+        <Link className="comercio" href={`/comercio/${slugComercio(promo.comercio)}`}>
+          {promo.comercio}
+        </Link>
         <Link className="titulo" href={`/promo/${encodeURIComponent(promo.id)}`}>
           {promo.titulo}
         </Link>

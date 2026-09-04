@@ -326,3 +326,38 @@ a.titulo:hover{color:var(--ac)}
 /* vacío: el botón se separa del texto en vez de pegarse al pie */
 .vacio{display:flex;flex-direction:column;align-items:center;gap:9px}
 .vacio .btn{margin-top:6px}
+
+/* ═══════════ barra de orden ═══════════ */
+.barraOrden{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 15px}
+.orden{display:flex;align-items:center;gap:8px;margin:0 0 0 auto;flex:none}
+.orden span{font-size:12.5px;color:var(--tx3);font-weight:650;white-space:nowrap}
+.orden select{width:auto;min-width:172px;padding:7px 10px;font-size:13px}
+
+/* ═══════════ comercios ═══════════ */
+.cabComercio{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  padding:6px 0 4px}
+.cabComercio h1{font-size:26px}
+.logoGrande{width:62px;height:62px;border-radius:16px;background:#fff;padding:9px;
+  object-fit:contain;flex:none;box-shadow:0 1px 5px rgba(0,0,0,.16)}
+.cabComercio .pill{text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.cabComercio .pill:hover{color:var(--tx);border-color:var(--tx3)}
+
+.rejillaComercios{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));
+  gap:11px;margin-top:18px}
+.tarjetaComercio{display:flex;align-items:center;gap:12px;background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-decoration:none;
+  transition:border-color .12s,transform .12s}
+.tarjetaComercio:hover{border-color:var(--marca);transform:translateY(-2px)}
+.tarjetaComercio img{width:38px;height:38px;border-radius:10px;background:#fff;padding:5px;
+  object-fit:contain;flex:none}
+.tarjetaComercio .sinLogo{width:38px;height:38px;border-radius:10px;background:var(--panel2);
+  display:grid;place-items:center;font-weight:800;font-size:17px;color:var(--tx2);flex:none}
+.tarjetaComercio div{flex:1;min-width:0}
+.tarjetaComercio strong{display:block;font-size:14.5px;font-weight:750;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.tarjetaComercio .sub{font-size:12px;margin-top:1px}
+.tarjetaComercio .ico{color:var(--tx3);flex:none}
+
+/* el comercio de la tarjeta ahora es un enlace */
+a.comercio{text-decoration:none;display:block;width:fit-content}
+a.comercio:hover{text-decoration:underline}

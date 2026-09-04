@@ -48,6 +48,7 @@ export default async function RootLayout({ children }) {
 
             <nav className="nav">
               <Link href="/">Promos</Link>
+              <Link href="/comercios">Comercios</Link>
               {s && <Link href="/mi-cuenta">Mi cuenta</Link>}
               {s?.esAdmin && <Link href="/admin">Panel</Link>}
               {s && !local ? (
