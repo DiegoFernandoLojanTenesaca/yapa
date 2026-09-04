@@ -1,0 +1,15 @@
+{
+  "name": "promos-ec",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Promociones y descuentos de Ecuador, en un solo lugar",
+  "scripts": {
+    "scrape": "node scrape.js",
+    "test": "node test.js",
+    "sitio": "npx --yes serve ."
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}
