@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 
 export const fuente = 'produbanco';
 export const banco = 'Produbanco';
+export const origen = 'Produbanco';
 export const url = 'https://www.produbanco.com.ec/banca-personas/promociones/';
 
 // El nombre del comercio no está en ningún campo propio: viene en el alt de la

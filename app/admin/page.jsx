@@ -33,7 +33,7 @@ export default async function Resumen() {
       {fuentes.map((f) => (
         <div className="caja" key={f.fuente}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'baseline', flexWrap: 'wrap' }}>
-            <h2 style={{ marginRight: 'auto' }}>{f.banco}</h2>
+            <h2 style={{ marginRight: 'auto' }}>{f.nombre}</h2>
             <span className={`pill${f.ultima?.error ? ' alerta' : ''}`}>
               {f.ultima?.error ? 'con error' : 'ok'}
             </span>

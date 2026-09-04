@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { alternarCampo, borrarPromo } from '../../acciones.js';
+import Paginacion from '../../Paginacion.jsx';
 import { promosAdmin } from '../../../lib/consultas.js';
 import { FUENTES } from '../../../lib/scraping.js';
 
@@ -7,17 +8,22 @@ export const dynamic = 'force-dynamic';
 
 const ESTADOS = [
   ['', 'Todas'], ['ocultas', 'Ocultas'], ['vencidas', 'Vencidas'],
-  ['inactivas', 'Ya no están en el origen'], ['editadas', 'Editadas a mano'],
+  ['inactivas', 'Ya no están en el origen'], ['editadas', 'Editadas a mano'], ['conCodigo', 'Con código'],
 ];
 
 export default async function Promos({ searchParams }) {
   const sp = await searchParams;
-  const promos = await promosAdmin({ q: sp.q, fuente: sp.fuente, estado: sp.estado });
+  const todas = await promosAdmin({ q: sp.q, fuente: sp.fuente, estado: sp.estado });
+
+  const POR_PAGINA = 40;
+  const paginas = Math.max(1, Math.ceil(todas.length / POR_PAGINA));
+  const pagina = Math.min(Math.max(1, Number(sp.p) || 1), paginas);
+  const promos = todas.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
 
   return (
     <>
       <h1>Promos</h1>
-      <p className="sub">{promos.length} resultados · máximo 400</p>
+      <p className="sub">{todas.length} resultados{paginas > 1 && ` · página ${pagina} de ${paginas}`}</p>
 
       <form className="fila" style={{ margin: '18px 0' }}>
         <input name="q" defaultValue={sp.q ?? ''} placeholder="Buscar comercio o título…" />
@@ -88,6 +94,8 @@ export default async function Promos({ searchParams }) {
           </tbody>
         </table>
       </div>
+
+      <Paginacion pagina={pagina} paginas={paginas} params={sp} base="/admin/promos" />
     </>
   );
 }

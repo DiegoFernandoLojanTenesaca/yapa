@@ -8,14 +8,20 @@ const diasPara = (iso) =>
 const enLetras = (iso) =>
   new Date(iso + 'T12:00:00').toLocaleDateString('es-EC', { day: 'numeric', month: 'short' });
 
-export default function TarjetaPromo({ promo, esFavorita, haySesion }) {
+export default function TarjetaPromo({ promo, esFavorita, haySesion, origen }) {
   const d = diasPara(promo.vence);
   const numero = rebaja(promo);
 
   return (
     <article className={`promo${promo.destacada ? ' esDestacada' : ''}`}>
-      <div className="foto">
-        {promo.imagen && <img src={promo.imagen} alt="" loading="lazy" />}
+      <div className={`foto${promo.imagen ? '' : ' sinFoto'}`}>
+        {promo.imagen ? (
+          <img src={promo.imagen} alt="" loading="lazy" />
+        ) : (
+          // Los agregadores publican el código, no una foto de la promo.
+          <span className="inicial">{promo.comercio}</span>
+        )}
+
         {promo.destacada && <span className="cinta">Destacada</span>}
         {numero && <span className="rebaja">{numero}</span>}
 
@@ -40,7 +46,11 @@ export default function TarjetaPromo({ promo, esFavorita, haySesion }) {
 
         <div className="meta">
           <span className="pill">{promo.categoria}</span>
-          {promo.banco && <span className="pill">{promo.banco}</span>}
+          {promo.banco ? (
+            <span className="pill">{promo.banco}</span>
+          ) : (
+            origen && <span className="pill">{origen}</span>
+          )}
           {promo.ciudad !== 'todo_el_pais' && (
             <span className="pill">{promo.ciudad.replace(/_/g, ' ')}</span>
           )}

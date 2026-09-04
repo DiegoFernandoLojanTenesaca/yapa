@@ -2,10 +2,13 @@ import { Suspense } from 'react';
 import Filtros from './Filtros.jsx';
 import TarjetaPromo from './TarjetaPromo.jsx';
 import BarraCategorias from './BarraCategorias.jsx';
+import Paginacion from './Paginacion.jsx';
 import { sesion } from '../lib/almacen.js';
 import { promosPublicas, catalogos, idsFavoritas } from '../lib/consultas.js';
 
 export const dynamic = 'force-dynamic';
+
+const POR_PAGINA = 24;
 
 export default async function Inicio({ searchParams }) {
   const sp = await searchParams;
@@ -15,8 +18,9 @@ export default async function Inicio({ searchParams }) {
     promosPublicas({
       q: sp.q,
       categoria: sp.categoria,
-      banco: sp.banco,
+      origen: sp.origen,
       ciudad: sp.ciudad,
+      soloConCodigo: sp.codigo === '1',
       favoritas: sp.favoritas === '1',
       usuarioId: s?.user.id,
     }),
@@ -24,12 +28,24 @@ export default async function Inicio({ searchParams }) {
     idsFavoritas(s?.user.id),
   ]);
 
-  const hayFiltro = !!(sp.q || sp.categoria || sp.banco || sp.ciudad || sp.favoritas);
-  const destacadas = hayFiltro ? [] : promos.filter((p) => p.destacada).slice(0, 3);
+  const hayFiltro = !!(sp.q || sp.categoria || sp.origen || sp.ciudad || sp.favoritas || sp.codigo);
+
+  // Las destacadas van fuera del listado, y solo en la primera página sin filtros.
+  const destacadas = hayFiltro || sp.p ? [] : promos.filter((p) => p.destacada).slice(0, 3);
   const resto = promos.filter((p) => !destacadas.includes(p));
 
+  const paginas = Math.max(1, Math.ceil(resto.length / POR_PAGINA));
+  const pagina = Math.min(Math.max(1, Number(sp.p) || 1), paginas);
+  const visibles = resto.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+
   const tarjeta = (p) => (
-    <TarjetaPromo key={p.id} promo={p} esFavorita={favoritas.has(p.id)} haySesion={!!s} />
+    <TarjetaPromo
+      key={p.id}
+      promo={p}
+      esFavorita={favoritas.has(p.id)}
+      haySesion={!!s}
+      origen={cat.etiquetas[p.fuente]}
+    />
   );
 
   return (
@@ -43,7 +59,7 @@ export default async function Inicio({ searchParams }) {
             Todas las promos de Ecuador, <em>en un solo lugar</em>.
           </h1>
           <p>
-            {cat.bancos.length} {cat.bancos.length === 1 ? 'fuente' : 'fuentes'} ·
+            {cat.origenes.length} {cat.origenes.length === 1 ? 'fuente' : 'fuentes'} ·
             actualizado todos los días
           </p>
 
@@ -54,7 +70,7 @@ export default async function Inicio({ searchParams }) {
 
         <p className="conteo">
           {promos.length} {promos.length === 1 ? 'promoción vigente' : 'promociones vigentes'}
-          {sp.categoria ? ` en ${sp.categoria}` : ''}
+          {paginas > 1 && ` · página ${pagina} de ${paginas}`}
         </p>
 
         {destacadas.length > 0 && (
@@ -73,7 +89,10 @@ export default async function Inicio({ searchParams }) {
               : 'Corré el scraper desde el panel para traer las promos.'}
           </div>
         ) : (
-          <div className="grid">{resto.map(tarjeta)}</div>
+          <>
+            <div className="grid">{visibles.map(tarjeta)}</div>
+            <Paginacion pagina={pagina} paginas={paginas} params={sp} />
+          </>
         )}
       </div>
     </>

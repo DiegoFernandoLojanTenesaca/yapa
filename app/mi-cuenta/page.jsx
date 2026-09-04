@@ -11,7 +11,7 @@ export default async function MiCuenta() {
   const s = await sesion();
   if (!s) redirect('/entrar');
 
-  const [favoritas, { bancos }] = await Promise.all([
+  const [favoritas, { bancos, etiquetas }] = await Promise.all([
     promosPublicas({ favoritas: true, usuarioId: s.user.id }),
     catalogos(),
   ]);
@@ -63,7 +63,7 @@ export default async function MiCuenta() {
       ) : (
         <div className="grid">
           {favoritas.map((p) => (
-            <TarjetaPromo key={p.id} promo={p} esFavorita haySesion />
+            <TarjetaPromo key={p.id} promo={p} esFavorita haySesion origen={etiquetas[p.fuente]} />
           ))}
         </div>
       )}

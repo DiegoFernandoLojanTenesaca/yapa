@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 
 export const fuente = 'pacifico';
 export const banco = 'Banco del Pacífico';
+export const origen = 'Banco del Pacífico';
 export const url = 'https://www.bancodelpacifico.com/promociones/beneficios-pacificard';
 
 const BASE = 'https://www.bancodelpacifico.com';

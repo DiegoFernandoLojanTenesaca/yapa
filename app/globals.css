@@ -164,3 +164,28 @@ h1{font-size:26px;letter-spacing:-.028em;font-weight:800}
 .vacio b{display:block;font-size:16px;color:var(--tx);margin-bottom:5px}
 .centro{max-width:400px;margin:56px auto}
 .py{padding-top:4px;padding-bottom:64px}
+
+/* ═══════════ paginación ═══════════ */
+.paginacion{display:flex;gap:6px;align-items:center;justify-content:center;
+  flex-wrap:wrap;margin:30px 0 8px}
+.pag{display:inline-flex;align-items:center;justify-content:center;min-width:38px;
+  height:38px;padding:0 13px;border:1px solid var(--line);border-radius:9px;
+  background:var(--panel);color:var(--tx2);text-decoration:none;font-size:13.5px;
+  font-weight:700}
+.pag:hover{color:var(--tx);border-color:var(--tx3)}
+.pag.on{background:var(--marca);border-color:var(--marca);color:#fff}
+.pag.num{padding:0}
+.salto{color:var(--tx3);padding:0 2px;font-weight:700}
+
+/* ═══════════ tarjeta sin foto ═══════════ */
+/* Los agregadores dan el código pero no una imagen: en vez de un hueco gris,
+   se usa el nombre del comercio como portada. */
+.foto.sinFoto{aspect-ratio:16/9;display:grid;place-items:center;padding:14px 16px;
+  background:linear-gradient(135deg,var(--panel2),var(--panel));
+  border-bottom:1px solid var(--line)}
+.destacadas .foto.sinFoto{aspect-ratio:2/1}
+.foto.sinFoto .inicial{font-size:22px;font-weight:800;letter-spacing:-.03em;
+  color:var(--tx3);text-align:center;line-height:1.15}
+
+.interruptores{display:flex;gap:14px;align-items:center;flex:0 0 auto;flex-wrap:wrap}
+.buscador .btn{flex:0 0 auto}

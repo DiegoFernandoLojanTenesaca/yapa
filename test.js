@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { scrape as scrapeProdubanco } from './scrapers/produbanco.js';
 import { scrape as scrapePacifico } from './scrapers/pacifico.js';
+import { scrape as scrapeCupones } from './scrapers/cuponesecuador.js';
 import { rebaja } from './lib/rebaja.js';
 
 /* ══════════════════════ Produbanco ══════════════════════ */
@@ -104,6 +105,63 @@ assert.equal(
 assert.equal(pa[1].categoria, 'salud', '"Centros Médicos" con tilde y entidad -> salud');
 
 assert.deepEqual(scrapePacifico('<div>otra cosa</div>'), [], 'html desconocido -> vacío');
+
+/* ══════════════════════ CuponesEcuador ══════════════════════ */
+
+const HTML_CUPONES = `
+<section class="coupons">
+  <div class="coupon"><div class="coupon-inner">
+    <div class="coupon-main">
+      <div class="coupon-title"><a class="rc-title"
+        href="https://www.cuponesecuador.com.ec/tienda/pizza-hut/#coupon_12193"
+        data-id="12193" data-code="HUT2GO"
+        data-title="Cupón Combo por US$ 16,99 en Pizza Hut"
+        data-terms="Aplica el código en pizza mediana.">Cupón Combo en Pizza Hut</a></div>
+    </div>
+    <div class="coupon-cta"><a class="coupon-btn btn btn-coupon" data-id="12193" data-code="HUT2GO"
+      data-deeplink="https://r.linksprf.com/v1/redirect?url=https%3A%2F%2Fwww.pizzahut.com.ec%2Fhome&#038;api_key=SECRETO&#038;site_id=XYZ">Mostrar Cupón</a></div>
+    <div class="coupon-signals"><span class="coupon-expiry">Válido hasta 07/09/2026</span></div>
+    <div class="coupon-store-link"><a href="https://www.cuponesecuador.com.ec/tienda/pizza-hut/">Pizza Hut</a></div>
+  </div></div>
+
+  <div class="coupon"><div class="coupon-inner">
+    <div class="coupon-main">
+      <div class="coupon-title"><a class="rc-title"
+        href="https://www.cuponesecuador.com.ec/tienda/kfc-ecuador/#coupon_9"
+        data-id="9" data-code="MEGAPROMO" data-title="Combos con precio especial en KFC"
+        data-terms="Solo en la app oficial."></a></div>
+    </div>
+    <div class="coupon-cta"><a class="coupon-btn" data-id="9" data-code="MEGAPROMO"
+      data-deeplink="https://www.awin1.com/cread.php?awinmid=18697&#038;awinaffid=354041">Mostrar</a></div>
+    <div class="coupon-store-link"><a href="https://www.cuponesecuador.com.ec/tienda/kfc-ecuador/">KFC</a></div>
+  </div></div>
+</section>`;
+
+const cu = scrapeCupones(HTML_CUPONES);
+assert.equal(cu.length, 2, 'cuponesecuador: 2 cupones');
+
+assert.equal(cu[0].id, 'cuponesecuador:12193');
+assert.equal(cu[0].comercio, 'Pizza Hut');
+assert.equal(cu[0].codigo, 'HUT2GO', 'el código sale del data-code');
+assert.equal(cu[0].categoria, 'restaurantes', 'clasificado por palabras clave');
+assert.equal(cu[0].vence, '2026-09-07');
+assert.equal(cu[0].banco, null, 'un agregador no es un banco');
+assert.equal(
+  cu[0].url,
+  'https://www.pizzahut.com.ec/home',
+  'saca el destino real del redirector: no pasa por el enlace de afiliado ajeno'
+);
+
+assert.equal(cu[1].comercio, 'KFC', 'acrónimo en mayúscula y sin el sufijo -ecuador');
+assert.equal(cu[1].categoria, 'restaurantes');
+assert.equal(
+  cu[1].url,
+  'https://www.cuponesecuador.com.ec/tienda/kfc-ecuador/#coupon_9',
+  'si el enlace es de afiliado sin destino visible, apunta a la fuente en vez de monetizarles el clic'
+);
+assert.equal(cu[1].vence, null, 'sin fecha publicada -> null');
+
+assert.deepEqual(scrapeCupones('<div>nada</div>'), [], 'html desconocido -> vacío');
 
 /* ══════════════════════ el número de la promo ══════════════════════ */
 
