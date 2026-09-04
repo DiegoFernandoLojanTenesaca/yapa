@@ -1,7 +1,15 @@
 import './globals.css';
 import Link from 'next/link';
+import { Nunito } from 'next/font/google';
 import { sesionActual } from '../lib/supabase.js';
 import { salir } from './acciones.js';
+
+// Redondeada, igual que la bolsita del icono: la marca se lee como una pieza.
+const nunito = Nunito({
+  subsets: ['latin'],
+  variable: '--fuente',
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Yapa — promos y descuentos de Ecuador',
@@ -12,16 +20,12 @@ export const metadata = {
 function Logo() {
   return (
     <svg viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#41d999" />
-          <stop offset="1" stopColor="#0f9e7a" />
-        </linearGradient>
-      </defs>
-      <rect width="64" height="64" rx="15" fill="url(#lg)" />
-      <path d="M23 24v-4a9 9 0 0 1 18 0v4" fill="none" stroke="#fff" strokeWidth="4.2" strokeLinecap="round" />
-      <path d="M15.5 23h33l-2.9 25.4A6 6 0 0 1 39.6 54H24.4a6 6 0 0 1-6-5.6z" fill="#fff" />
-      <path d="M32 31.5v13M25.5 38h13" stroke="#0f9e7a" strokeWidth="4.6" strokeLinecap="round" />
+      <rect width="64" height="64" rx="15" fill="#da291c" />
+      <path d="M24.5 26v-4.5a7.5 7.5 0 0 1 15 0V26" fill="none" stroke="#ffc72c" strokeWidth="4" strokeLinecap="round" />
+      <path d="M14.5 25.5h35l-3.1 24.6A6.5 6.5 0 0 1 39.9 56H24.1a6.5 6.5 0 0 1-6.5-5.9z" fill="#ffc72c" />
+      <circle cx="26.4" cy="37" r="2.9" fill="#b81f14" />
+      <circle cx="37.6" cy="37" r="2.9" fill="#b81f14" />
+      <path d="M26.2 44.6c1.9 2.7 4 4 5.8 4s3.9-1.3 5.8-4" fill="none" stroke="#b81f14" strokeWidth="3.1" strokeLinecap="round" />
     </svg>
   );
 }
@@ -30,7 +34,7 @@ export default async function RootLayout({ children }) {
   const s = await sesionActual();
 
   return (
-    <html lang="es">
+    <html lang="es" className={nunito.variable}>
       <body>
         <header className="top">
           <div className="wrap">
